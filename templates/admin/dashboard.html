@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Welcome to Dashboard</h1>
+        <table>
+
+            <tr>
+                <td>
+                    <img src="static/images/classroom.jpg" alt="classroom-image" height="100px" width="100px">
+                </td>
+                <td>
+                    <a href="{{ url_for('add_class') }}" class="dashboard-link">Add Class</a>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <img src="static/images/teacher.jpg" alt="teacher-image" height="100px" width="100px">
+                </td>
+                <td>
+                    <a href="{{ url_for('add_teacher') }}" class="dashboard-link">Add Teacher</a>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <img src="static/images/fee.jpg" alt="fee-image" height="100px" width="100px">
+                </td>
+                <td>
+                    <a href="{{ url_for('add_fee_structure') }}" class="dashboard-link">Add Fee Structure</a>
+                </td>
+            </tr>
+
+        </table>
+
+        
+        
+        
+        <a href="{{ url_for('logout') }}" class="dashboard-link">Logout</a>
+    </div>
+</body>
+</html>

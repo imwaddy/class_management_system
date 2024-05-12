@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fee Structure</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Fee Structure</h1>
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Class Name</th>
+                    <th>Teacher Name</th>
+                    <th>Amount</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for fee in fee_structure %}
+                <tr>
+                    <td>{{ fee[0] }}</td>
+                    <td>{{ fee[1] }}</td>
+                    <td>{{ fee[2] }}</td>
+                    <td>{{ fee[3] }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        
+        <br>
+        <a href="{{ url_for('logoutStudent') }}" class="dashboard-link">Logout</a>
+    </div>
+</body>
+</html>

@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Class</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+    <div class="container">
+        <h1>Add Class</h1>
+        {% if error %}
+        <p class="error">{{ error }}</p>
+        {% endif %}
+        <form action="{{ url_for('add_class') }}" method="post">
+            <label for="class_name">Class Name:</label>
+            <input type="text" id="class_name" name="name" placeholder="Enter class name" required><br>
+            <label for="duration">Duration (in hours):</label>
+            <input type="number" id="duration" name="duration" placeholder="Enter duration" required><br>
+            <button type="submit">Add Class</button>
+        </form>
+        <br>
+        <div>
+            <a href="{{ url_for('dashboard') }}" class="back-button">Back to Dashboard</a>
+        </div>
+    </div>
+   
+
+    {% if classes %}
+    <div class="container">
+        <h2>Class Details</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Class Name</th>
+                    <th>Duration (hours)</th>
+                    <th>Delete</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for class_info in classes %}
+                <tr>
+                    <td>{{ class_info[1] }}</td>
+                    <td>{{ class_info[2] }}</td>
+                    <td><a href="{{ url_for('delete_class', class_name=class_info[1]) }}">Delete</a></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% endif %}
+
+</body>
+
+</html>

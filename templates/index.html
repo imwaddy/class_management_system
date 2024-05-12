@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+    <div class="container">
+        <h1>Welcome to Class Management System</h1>
+        <br>
+        <br>
+        <br>
+        <br>
+
+        <div>
+            <h1>
+                Admin Operations
+            </h1>
+
+            <table>
+                <tr>
+                    <td>
+                        <img src="static/images/admin_register.jpg" alt="admin-image" height="100px" width="100px">
+                    </td>
+                    <td>
+                        <a href="{{ url_for('register') }}" class="nav-link">Register Admin</a>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <img src="static/images/admin_login.jpg" alt="admin-image" height="100px" width="100px">
+                    </td>
+                    <td>
+                        <a href="{{ url_for('login') }}" class="nav-link">Admin Login</a>
+                    </td>
+                </tr>
+            </table>
+
+        </div>
+
+        <br>
+        <br>
+        <br>
+        <br>
+
+        <div>
+            <h1>
+                Student Operations
+            </h1>
+
+            <table>
+                <tr>
+                    <td>
+                        <img src="static/images/admin_register.jpg" alt="student-image" height="100px" width="100px">
+                    </td>
+                    <td>
+                        <a href="{{ url_for('registerStudent') }}" class="nav-link">Register Student</a>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <img src="static/images/admin_login.jpg" alt="admin-image" height="100px" width="100px">
+                    </td>
+                    <td>
+                        <a href="{{ url_for('studentLogin') }}" class="nav-link">Student Login</a>
+                    </td>
+                </tr>
+            </table>
+
+        </div>
+
+    </div>
+</body>
+
+</html>

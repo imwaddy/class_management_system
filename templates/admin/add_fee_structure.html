@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Fee Structure</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Add Fee Structure</h1>
+        {% if error %}
+        <p class="error">{{ error }}</p>
+        {% endif %}
+        <form action="{{ url_for('add_fee_structure') }}" method="post">
+            <label for="class_id">Class:</label>
+            <select id="class_id" name="class_id" required>
+                {% for class in classes %}
+                <option value="{{ class[0] }}">{{ class[1] }}</option>
+                {% endfor %}
+            </select><br>
+            <label for="teacher_id">Teacher:</label>
+            <select id="teacher_id" name="teacher_id" required>
+                {% for teacher in teachers %}
+                <option value="{{ teacher[0] }}">{{ teacher[1] }}</option>
+                {% endfor %}
+            </select><br>
+            <label for="amount">Amount:</label>
+            <input type="number" id="amount" name="amount" placeholder="Enter amount" required><br>
+            <button type="submit">Add Fee Structure</button>
+        </form>
+        <br>
+        <div>
+            <a href="{{ url_for('dashboard') }}" class="back-button">Back to Dashboard</a>
+        </div>
+    </div>
+
+    {% if fee_structures %}
+    <div class="container">
+        <h2>Fee Structure Details</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Class Name</th>
+                    <th>Teacher Name</th>
+                    <th>Amount</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for fee_structure in fee_structures %}
+                <tr>
+                    <td>{{ fee_structure[1] }}</td>
+                    <td>{{ fee_structure[2] }}</td>
+                    <td>{{ fee_structure[3] }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% endif %}
+
+</body>
+</html>
