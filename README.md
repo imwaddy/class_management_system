@@ -30,15 +30,16 @@ python3 -m venv myenv
 
 ### 4. Activate the virtual environment::
 
-    #### On Unix/Linux/macOS:
-    ```bash
-    source myenv/bin/activate
-    ```
+- On Unix/Linux/macOS:
+```bash
+source myenv/bin/activate
+```
 
-    #### On Unix/Linux/macOS:
-    ```bash
-    myenv\Scripts\activate
-    ```
+- On Windows:
+```bash
+myenv\Scripts\activate
+```
+
 ### 5. Install dependencies:
  ```bash
 pip install -r requirements.txt
