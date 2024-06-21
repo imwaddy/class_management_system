@@ -4,7 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Fee Structure</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='fontawesome/css/all.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <script ref="{{ url_for('static', filename='jquery.min.js') }}"></script>
 </head>
 <body>
     <div class="container">
@@ -31,7 +33,7 @@
         </table>
         
         <br>
-        <a href="{{ url_for('logoutStudent') }}" class="dashboard-link">Logout</a>
+        <a href="{{ url_for('logoutStudent') }}" class="dashboard-link button"> <i class="fas fa-sign-out-alt"></i> Logout</a>
     </div>
 </body>
 </html>

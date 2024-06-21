@@ -5,29 +5,26 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Home</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='fontawesome/css/all.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <script ref="{{ url_for('static', filename='jquery.min.js') }}"></script>
 </head>
 
 <body>
     <div class="container">
         <h1>Welcome to Class Management System</h1>
-        <br>
-        <br>
-        <br>
-        <br>
 
-        <div>
-            <h1>
-                Admin Operations
-            </h1>
-
+        <div id="admin">
+            <h2>Admin Operations</h2>
             <table>
                 <tr>
                     <td>
                         <img src="static/images/admin_register.jpg" alt="admin-image" height="100px" width="100px">
                     </td>
                     <td>
-                        <a href="{{ url_for('register') }}" class="nav-link">Register Admin</a>
+                        <a href="{{ url_for('register') }}" class="nav-link button">
+                            Register Admin <i class="fas fa-user-plus"></i>
+                        </a>
                     </td>
                 </tr>
                 <tr>
@@ -35,30 +32,25 @@
                         <img src="static/images/admin_login.jpg" alt="admin-image" height="100px" width="100px">
                     </td>
                     <td>
-                        <a href="{{ url_for('login') }}" class="nav-link">Admin Login</a>
+                        <a href="{{ url_for('login') }}" class="nav-link button">
+                           Admin Login <i class="fas fa-sign-in-alt"></i>
+                        </a>
                     </td>
                 </tr>
             </table>
-
         </div>
 
-        <br>
-        <br>
-        <br>
-        <br>
-
-        <div>
-            <h1>
-                Student Operations
-            </h1>
-
+        <div id="student">
+            <h2>Student Operations</h2>
             <table>
                 <tr>
                     <td>
                         <img src="static/images/admin_register.jpg" alt="student-image" height="100px" width="100px">
                     </td>
                     <td>
-                        <a href="{{ url_for('registerStudent') }}" class="nav-link">Register Student</a>
+                        <a href="{{ url_for('registerStudent') }}" class="nav-link button">
+                            Register Student <i class="fas fa-user-plus"></i>
+                        </a>
                     </td>
                 </tr>
                 <tr>
@@ -66,13 +58,13 @@
                         <img src="static/images/admin_login.jpg" alt="admin-image" height="100px" width="100px">
                     </td>
                     <td>
-                        <a href="{{ url_for('studentLogin') }}" class="nav-link">Student Login</a>
+                        <a href="{{ url_for('studentLogin') }}" class="nav-link button">
+                            Student Login <i class="fas fa-sign-in-alt"></i>
+                        </a>
                     </td>
                 </tr>
             </table>
-
         </div>
-
     </div>
 </body>
 

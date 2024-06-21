@@ -4,7 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Register</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='fontawesome/css/all.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <script ref="{{ url_for('static', filename='jquery.min.js') }}"></script>
 </head>
 <body>
     <div class="container">
@@ -17,8 +19,8 @@
             <input type="text" id="username" name="username" placeholder="Enter username" required><br>
             <label for="password">Password:</label>
             <input type="password" id="password" name="password" placeholder="Enter password" required><br>
-            <button type="submit">Register</button>
-            <a href="{{ url_for('index') }}" class="back-button">Back to Home</a>
+            <button type="submit" class="button">Register</button>
+            <a href="{{ url_for('index') }}" class="back-button button"><i class="fas fa-backspace"></i> Back to Home</a>
         </form>
     </div>
 </body>

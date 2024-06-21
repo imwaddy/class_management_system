@@ -4,44 +4,41 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='fontawesome/css/all.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <script ref="{{ url_for('static', filename='jquery.min.js') }}"></script>
 </head>
 <body>
     <div class="container">
         <h1>Welcome to Dashboard</h1>
         <table>
-
             <tr>
                 <td>
-                    <img src="static/images/classroom.jpg" alt="classroom-image" height="100px" width="100px">
+                    <img src="{{ url_for('static', filename='images/classroom.jpg') }}" alt="classroom-image" height="100px" width="100px">
                 </td>
                 <td>
-                    <a href="{{ url_for('add_class') }}" class="dashboard-link">Add Class</a>
+                    <a href="{{ url_for('add_class') }}" class="dashboard-link button"><i class="fas fa-plus-circle"></i> Add Class</a>
                 </td>
             </tr>
             <tr>
                 <td>
-                    <img src="static/images/teacher.jpg" alt="teacher-image" height="100px" width="100px">
+                    <img src="{{ url_for('static', filename='images/teacher.jpg') }}" alt="teacher-image" height="100px" width="100px">
                 </td>
                 <td>
-                    <a href="{{ url_for('add_teacher') }}" class="dashboard-link">Add Teacher</a>
+                    <a href="{{ url_for('add_teacher') }}" class="dashboard-link button"><i class="fas fa-plus-circle"></i> Add Teacher</a>
                 </td>
             </tr>
             <tr>
                 <td>
-                    <img src="static/images/fee.jpg" alt="fee-image" height="100px" width="100px">
+                    <img src="{{ url_for('static', filename='images/fee.jpg') }}" alt="fee-image" height="100px" width="100px">
                 </td>
                 <td>
-                    <a href="{{ url_for('add_fee_structure') }}" class="dashboard-link">Add Fee Structure</a>
+                    <a href="{{ url_for('add_fee_structure') }}" class="dashboard-link button"><i class="fas fa-plus-circle"></i> Add Fee Structure</a>
                 </td>
             </tr>
-
         </table>
-
-        
-        
-        
-        <a href="{{ url_for('logout') }}" class="dashboard-link">Logout</a>
+        <br>
+        <a href="{{ url_for('logout') }}" class="dashboard-link button"> <i class="fas fa-sign-out-alt"></i> Logout</a>
     </div>
 </body>
 </html>

@@ -5,7 +5,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Add Class</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='fontawesome/css/all.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <script ref="{{ url_for('static', filename='jquery.min.js') }}"></script>
 </head>
 
 <body>
@@ -19,14 +21,13 @@
             <input type="text" id="class_name" name="name" placeholder="Enter class name" required><br>
             <label for="duration">Duration (in hours):</label>
             <input type="number" id="duration" name="duration" placeholder="Enter duration" required><br>
-            <button type="submit">Add Class</button>
+            <button type="submit" class="button"><i class="fas fa-plus-circle"></i> Add Class</button>
         </form>
         <br>
         <div>
-            <a href="{{ url_for('dashboard') }}" class="back-button">Back to Dashboard</a>
+            <a href="{{ url_for('dashboard') }}" class="back-button"><i class="fas fa-backspace"></i> Back to Dashboard</a>
         </div>
     </div>
-   
 
     {% if classes %}
     <div class="container">
@@ -44,7 +45,7 @@
                 <tr>
                     <td>{{ class_info[1] }}</td>
                     <td>{{ class_info[2] }}</td>
-                    <td><a href="{{ url_for('delete_class', class_name=class_info[1]) }}">Delete</a></td>
+                    <td><a href="{{ url_for('delete_class', class_name=class_info[1]) }}" class="delete-link"><i class="fas fa-trash-alt"></i> Delete</a></td>
                 </tr>
                 {% endfor %}
             </tbody>

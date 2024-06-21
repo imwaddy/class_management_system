@@ -4,7 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Add Teacher</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='fontawesome/css/all.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <script ref="{{ url_for('static', filename='jquery.min.js') }}"></script>
 </head>
 <body>
     <div class="container">
@@ -15,11 +17,11 @@
         <form action="{{ url_for('add_teacher') }}" method="post">
             <label for="teacher_name">Teacher Name:</label>
             <input type="text" id="teacher_name" name="name" placeholder="Enter teacher name" required><br>
-            <button type="submit">Add Teacher</button>
+            <button type="submit" class="button"><i class="fas fa-plus-circle"></i> Add Teacher</button>
         </form>
         <br>
         <div>
-            <a href="{{ url_for('dashboard') }}" class="back-button">Back to Dashboard</a>
+            <a href="{{ url_for('dashboard') }}" class="back-button button"><i class="fas fa-backspace"></i> Back to Dashboard</a>
         </div>
     </div>
 
@@ -37,7 +39,7 @@
                 {% for teacher in teachers %}
                 <tr>
                     <td>{{ teacher[1] }}</td>
-                    <td><a href="{{ url_for('delete_teachers', teacher_name=teacher[1]) }}">Delete</a></td>
+                    <td><a href="{{ url_for('delete_teachers', teacher_name=teacher[1]) }}" class="delete-link"><i class="fas fa-trash-alt"></i> Delete</a></a></td>
                 </tr>
                 {% endfor %}
             </tbody>

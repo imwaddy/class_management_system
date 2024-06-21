@@ -1,117 +1,134 @@
-/* Reset CSS */
-body, h1, form, input, button, label {
+/* Global Styles */
+body {
+    background-image: url('images/background.jpg'); /* Adjust the path as needed */
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    font-family: Arial, sans-serif;
+    color: #333;
     margin: 0;
     padding: 0;
-    border: 0;
-    font-family: Arial, sans-serif;
 }
 
-/* Container */
 .container {
-    max-width: 500px;
+    max-width: 900px;
     margin: 50px auto;
     padding: 20px;
-    background-color: #fff;
-    border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    background-color: rgba(255, 255, 255, 0.9); /* Semi-transparent white background */
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+    text-align: center;
 }
 
-/* Heading */
 h1 {
-    text-align: center;
+    color: #0056b3;
+    margin-top: 70px; /* Space for fixed navbar */
+}
+
+h2 {
     color: #333;
 }
 
-/* Form */
-form {
-    margin-top: 20px;
+label {
+    display: block;
+    margin: 10px 0 5px;
+    font-size: 16px;
+    color: #333;
 }
 
-/* Text Input */
-input[type="text"],
-input[type="number"],
-input[type="password"] {
-    width: 100%;
+input, select {
+    width: 80%;
     padding: 10px;
-    margin-bottom: 10px;
+    margin: 10px 0;
     border: 1px solid #ccc;
-    border-radius: 4px;
-    box-sizing: border-box;
-}
-
-/* Button */
-button {
-    width: 100%;
-    padding: 10px;
-    margin-bottom: 10px;
-    border: none;
-    border-radius: 4px;
-    background-color: #4caf50;
-    color: #fff;
-    cursor: pointer;
-    box-sizing: border-box;
-}
-
-button:hover {
-    background-color: #45a049;
-}
-
-/* Focus */
-input[type="text"]:focus,
-input[type="number"]:focus,
-input[type="password"]:focus {
-    outline: none;
-    border-color: #007bff;
-}
-
-/* Select dropdown */
-select {
-    width: 100%;
-    padding: 10px;
-    margin-bottom: 10px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    box-sizing: border-box;
+    border-radius: 5px;
+    font-size: 16px;
+    background-color: #fff; /* Background color */
+    color: #333; /* Text color */
     appearance: none; /* Remove default arrow */
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%23000' class='bi bi-chevron-down' viewBox='0 0 16 16'%3E%3Cpath fill-rule='evenodd' d='M7.646 9.646a.5.5 0 0 1 .708 0l4 4a.5.5 0 0 1-.708.708l-4-4a.5.5 0 0 1 0-.708z'/%3E%3Cpath fill-rule='evenodd' d='M7.646 3.646a.5.5 0 0 0 .708 0l4-4a.5.5 0 0 0-.708-.708l-4 4a.5.5 0 0 0 0 .708z'/%3E%3C/svg%3E");
+    -webkit-appearance: none; /* Remove default arrow for older versions of Safari */
+    -moz-appearance: none; /* Remove default arrow for older versions of Firefox */
+    background-image: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiB2aWV3Qm94PSIwIDAgMTAwIDEwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICA8cGF0aCBkPSJNIDAgMCAxMDAgMTAwIiBzdHJva2UtbGluZWNhcD0icm91bmQiIGZpbGw9Im5vbmUiLz4KPC9zdmc+Cg=='); /* Add custom arrow */
     background-repeat: no-repeat;
-    background-position: right 10px center;
-    background-size: 16px 16px;
+    background-position: right center;
+    background-size: 12px;
+    cursor: pointer;
 }
 
-/* Focus style */
-select:focus {
-    outline: none;
-    border-color: #007bff;
+input:focus, select:focus {
+    background-color: #e6f7ff;
 }
 
-/* Table */
-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-bottom: 20px;
+.button {
+    background-color: #007bff;
+    border: none;
+    color: white;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 10px 2px;
+    cursor: pointer;
+    border-radius: 8px;
+    transition: background-color 0.3s;
 }
 
-/* Table header */
-th {
-    background-color: #f2f2f2;
-    border: 1px solid #ddd;
-    padding: 8px;
-    text-align: left;
+.button:hover {
+    background-color: #0056b3;
 }
 
-/* Table rows */
-td {
-    border: 1px solid #ddd;
-    padding: 8px;
+.back-button {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #f0f0f0;
+    color: #333;
+    text-decoration: none;
+    border-radius: 5px;
+    transition: background-color 0.3s;
 }
 
-/* Alternate row background color */
-tbody tr:nth-child(even) {
-    background-color: #f2f2f2;
+.back-button:hover {
+    background-color: #ddd;
 }
 
 .error {
     color: red;
-    font-weight: bold;
+    font-size: 14px;
+}
+
+/* Table Styling */
+table {
+    width: 100%;
+    margin-top: 20px;
+    border-collapse: collapse;
+}
+
+td, th {
+    padding: 20px;
+    border: 1px solid #ddd;
+    text-align: left;
+}
+
+thead {
+    background-color: #f4f4f4;
+}
+
+tbody tr:hover {
+    background-color: #f1f1f1;
+}
+
+/* Delete Link Styling */
+.delete-link {
+    color: red;
+    text-decoration: none;
+}
+
+.delete-link:hover {
+    text-decoration: underline;
+}
+
+.hovered {
+    background-color: #f0f0f0;
+    color: #0056b3;
 }
