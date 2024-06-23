@@ -1,16 +1,50 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Fee Structure</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='fontawesome/css/all.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-    <script ref="{{ url_for('static', filename='jquery.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='jquery.min.js') }}"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Attach event listener to the form
+            document.querySelectorAll('.applyForm').forEach(function (form) {
+                form.addEventListener('submit', function (event) {
+                    event.preventDefault(); // Prevent the default form submission
+
+                    // Get the class ID from the hidden input field
+                    var value = this.querySelector('.feeInput').value;
+
+                    // Make an AJAX request to the API
+                    var xhr = new XMLHttpRequest();
+                    xhr.open('POST', "/api/apply_for_classes", true);
+                    xhr.setRequestHeader('Content-Type', 'application/json');
+                    xhr.onload = function () {
+                       alert(xhr.response)
+                       window.location.reload()
+                    };
+                    xhr.onerror = function () {
+                        // Handle network error here
+                        console.error('Request failed. Network error');
+                    };
+                    xhr.send(JSON.stringify({"class_id": value}));
+                });
+            });
+        });
+
+    </script>
 </head>
+
 <body>
     <div class="container">
         <h1>Fee Structure</h1>
+        {% if error %}
+        <p class="error">{{ error }}</p>
+        {% endif %}
+        {% if fee_structure %}
         <table>
             <thead>
                 <tr>
@@ -18,22 +52,41 @@
                     <th>Class Name</th>
                     <th>Teacher Name</th>
                     <th>Amount</th>
+                    <th>Want To Apply ?</th>
                 </tr>
             </thead>
             <tbody>
                 {% for fee in fee_structure %}
                 <tr>
-                    <td>{{ fee[0] }}</td>
-                    <td>{{ fee[1] }}</td>
-                    <td>{{ fee[2] }}</td>
-                    <td>{{ fee[3] }}</td>
+                    <td>{{ fee['id'] }}</td>
+                    <td>{{ fee['class_name'] }}</td>
+                    <td>{{ fee['teacher_name'] }}</td>
+                    <td>{{ fee['class_fee_amount'] }}</td>
+                    <td>
+                        {% if fee['enrolled'] %}
+                        You've already applied
+                        {% else %}
+                        <form class="applyForm">
+                            <input type="hidden" class="feeInput" value="{{ fee['id'] }}">
+                            <button type="submit" class="dashboard-link button" id="applyButton">
+                                <i class="fas fa-sign-in-alt"></i> Apply
+                            </button>
+                        </form>
+                        {% endif %}
+                        
+                    </td>
                 </tr>
                 {% endfor %}
             </tbody>
         </table>
-        
+        {% else %}
+        <p>No Classes Available At This Time</p>
+        {% endif %}
+
         <br>
-        <a href="{{ url_for('logoutStudent') }}" class="dashboard-link button"> <i class="fas fa-sign-out-alt"></i> Logout</a>
+        <a href="{{ url_for('logoutStudent') }}" class="dashboard-link button"> <i class="fas fa-sign-out-alt"></i>
+            Logout</a>
     </div>
 </body>
+
 </html>

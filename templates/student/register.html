@@ -6,7 +6,46 @@
     <title>Register</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='fontawesome/css/all.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-    <script ref="{{ url_for('static', filename='jquery.min.js') }}"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            var emailField = document.getElementById('email');
+            var usernameField = document.getElementById('username');
+
+            emailField.addEventListener('input', function() {
+                usernameField.value = emailField.value;
+            });
+
+            var errorMessage = document.createElement('p');
+            errorMessage.classList.add('error');
+            errorMessage.style.display = 'none';
+
+            emailField.insertAdjacentElement('afterend', errorMessage);
+
+            emailField.addEventListener('input', function() {
+                usernameField.value = emailField.value;
+                validateEmail();
+            });
+
+            form.addEventListener('submit', function(event) {
+                if (!validateEmail()) {
+                    event.preventDefault();
+                }
+            });
+
+            function validateEmail() {
+                var email = emailField.value;
+                var regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (!regex.test(email)) {
+                    errorMessage.textContent = 'Please enter a valid email address.';
+                    errorMessage.style.display = 'block';
+                    return false;
+                } else {
+                    errorMessage.style.display = 'none';
+                    return true;
+                }
+            }
+        });
+    </script>
 </head>
 <body>
     <div class="container">
@@ -15,8 +54,14 @@
         <p class="error">{{ error }}</p>
         {% endif %}
         <form action="{{ url_for('registerStudent') }}" method="post">
+            <label for="firstname">Firstname:</label>
+            <input type="text" id="firstname" name="firstname" placeholder="Enter firstname" required><br>
+            <label for="lastname">Lastname:</label>
+            <input type="text" id="lastname" name="lastname" placeholder="Enter lastname" required><br>
+            <label for="email">Email ID:</label>
+            <input type="email" id="email" name="email" placeholder="Enter email" required><br>
             <label for="username">Username:</label>
-            <input type="text" id="username" name="username" placeholder="Enter username" required><br>
+            <input type="text" id="username" name="username" placeholder="Enter username" readonly><br>
             <label for="password">Password:</label>
             <input type="password" id="password" name="password" placeholder="Enter password" required><br>
             <button type="submit" class="button">Register</button>

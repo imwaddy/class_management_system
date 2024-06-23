@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request, redirect, url_for, session, g
 import sqlite3
+import json
 
 app = Flask(__name__)
 app.secret_key = 'secret_key'
@@ -236,6 +237,9 @@ def registerStudent():
     # Create student table if it doesn't exist
     cursor.execute('''CREATE TABLE IF NOT EXISTS student (
                       id INTEGER PRIMARY KEY,
+                      firstname TEXT NOT NULL,
+                      lastname TEXT NOT NULL,
+                      email TEXT NOT NULL,
                       username TEXT NOT NULL,
                       password TEXT NOT NULL
                     )''')
@@ -244,6 +248,9 @@ def registerStudent():
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
+        firstname = request.form['firstname']
+        lastname = request.form['lastname']
+        email = request.form['email']
         
         # Check if the username already exists
         cursor.execute("SELECT username FROM student WHERE username = ?", (username,))
@@ -252,12 +259,19 @@ def registerStudent():
             return render_template('student/register.html', error='Username already exists')
         
         # Insert new student if the username doesn't exist
-        cursor.execute("INSERT INTO student (username, password) VALUES (?, ?)", (username, password))
+        cursor.execute("INSERT INTO student (firstname, lastname, email, username, password) VALUES (?, ?, ?, ?, ?)", (firstname, lastname, email,username, password))
         conn.commit()
         return redirect(url_for('studentLogin'))
 
     return render_template('student/register.html')
 
+# @app.route('/abcxyz', methods=['GET'])
+# def studentGET():
+#     conn = get_db()
+#     cursor = conn.cursor()
+#     cursor.execute("SELECT * FROM student")
+#     user = cursor.fetchall()
+#     return user
 
 @app.route('/studentLogin', methods=['GET', 'POST'])
 def studentLogin():
@@ -280,9 +294,71 @@ def studentLogin():
 def display_fee_structure():
     conn = get_db()
     cursor = conn.cursor()
-    cursor.execute("SELECT fee_structures.id, classes.name, teachers.name, fee_structures.amount FROM fee_structures INNER JOIN classes ON fee_structures.class_id = classes.id INNER JOIN teachers ON fee_structures.teacher_id = teachers.id")
-    fee_structure = cursor.fetchall()
-    return render_template('student/display_fee_structure.html', fee_structure=fee_structure)
+
+    # Check if the fee_structures table exists
+    cursor.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='fee_structures'")
+    fee_structures_table_exists = cursor.fetchone()
+    
+    cursor.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='classenrollment'")
+    classenrollment_table_exists = cursor.fetchone()
+
+    fee_structure = None
+    error = None
+
+    if fee_structures_table_exists:
+        # Retrieve fee structures
+        cursor.execute("""
+            SELECT fee_structures.id, classes.id AS class_id, classes.name AS class_name, 
+            teachers.id AS teacher_id, teachers.name AS teacher_name, fee_structures.amount AS class_fee_amount
+            FROM fee_structures
+            INNER JOIN classes ON fee_structures.class_id = classes.id
+            INNER JOIN teachers ON fee_structures.teacher_id = teachers.id
+        """)
+        fee_structure = cursor.fetchall()
+
+        # Retrieve student_id from session
+        student_id = session.get('student')
+        if student_id is not None:
+            student_id = int(student_id)
+            
+            if classenrollment_table_exists:
+                # Retrieve already enrolled classes for the student
+                cursor.execute("SELECT class_id FROM classenrollment WHERE student_id = ?", (student_id,))
+                enrolled_class_ids = [enrollment[0] for enrollment in cursor.fetchall()]
+
+                # Mark fee structures with enrollment status
+                fee_structure = [
+                    {
+                        'id': fee[0],
+                        'class_id': fee[1],
+                        'class_name': fee[2],
+                        'teacher_id': fee[3],
+                        'teacher_name': fee[4],
+                        'class_fee_amount': fee[5],
+                        'enrolled': fee[0] in enrolled_class_ids
+                    }
+                    for fee in fee_structure
+                ]
+            else:
+                fee_structure = [
+                    {
+                        'id': fee[0],
+                        'class_id': fee[1],
+                        'class_name': fee[2],
+                        'teacher_id': fee[3],
+                        'teacher_name': fee[4],
+                        'class_fee_amount': fee[5],
+                        'enrolled': False
+                    }
+                    for fee in fee_structure
+                ]
+        else:
+            error = "User not logged in"
+    else:
+        error = "No fee structures available"
+
+    return render_template('student/display_fee_structure.html', fee_structure=fee_structure, error=error)
+
 
 @app.route('/delete_class/<class_name>', methods=['GET', 'POST'])
 def delete_class(class_name):
@@ -311,6 +387,52 @@ def delete_teachers(teacher_name):
 
     return render_template('admin/add_teacher.html', teachers=teachers)
 
+@app.route('/api/apply_for_classes', methods=['POST'])
+def api_apply_for_classes():
+    conn = get_db()
+    cursor = conn.cursor()
+
+    # Create the classenrollment table if it does not exist
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS classenrollment (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            class_id INTEGER NOT NULL,
+            student_id INTEGER NOT NULL,
+            FOREIGN KEY (class_id) REFERENCES classes(id),
+            FOREIGN KEY (student_id) REFERENCES student(id)
+        )
+    """)
+
+    data = request.get_json()  # Get the JSON data from the request
+    if not data:
+        return "Invalid input", 400
+
+    class_id = data.get("class_id")
+    if not class_id:
+        return "Class ID is required", 400
+
+    student_id = session.get('student')
+    if student_id is not None:
+        student_id = int(student_id)
+    else:
+        return "User not logged in", 400
+
+    cursor.execute("SELECT * FROM student WHERE id = ?", (student_id,))
+    student = cursor.fetchone()
+    if student is None:
+        error = "No existing user found"
+        return error, 400
+
+    cursor.execute("SELECT * FROM classenrollment WHERE class_id = ? AND student_id = ?", (class_id, student_id))
+    value = cursor.fetchone()
+    if value:
+        return "You've already applied for the requested class", 400
+
+    # Insert the application into the database
+    cursor.execute("INSERT INTO classenrollment (class_id, student_id) VALUES (?, ?)", (class_id, student_id))
+    conn.commit()
+
+    return f"Thank You {student[1]} {student[2]}, You've successfully applied for the requested class", 200
 
 if __name__ == '__main__':
     app.run(debug=True)
