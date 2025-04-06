@@ -8,34 +8,6 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='fontawesome/css/all.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     <script src="{{ url_for('static', filename='jquery.min.js') }}"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            // Attach event listener to the form
-            document.querySelectorAll('.applyForm').forEach(function (form) {
-                form.addEventListener('submit', function (event) {
-                    event.preventDefault(); // Prevent the default form submission
-
-                    // Get the class ID from the hidden input field
-                    var value = this.querySelector('.feeInput').value;
-
-                    // Make an AJAX request to the API
-                    var xhr = new XMLHttpRequest();
-                    xhr.open('POST', "/api/apply_for_classes", true);
-                    xhr.setRequestHeader('Content-Type', 'application/json');
-                    xhr.onload = function () {
-                       alert(xhr.response)
-                       window.location.reload()
-                    };
-                    xhr.onerror = function () {
-                        // Handle network error here
-                        console.error('Request failed. Network error');
-                    };
-                    xhr.send(JSON.stringify({"class_id": value}));
-                });
-            });
-        });
-
-    </script>
 </head>
 
 <body>
@@ -52,6 +24,7 @@
                     <th>Class Name</th>
                     <th>Teacher Name</th>
                     <th>Amount</th>
+                    <th>Batch Timing</th>
                     <th>Want To Apply ?</th>
                 </tr>
             </thead>
@@ -63,17 +36,25 @@
                     <td>{{ fee['teacher_name'] }}</td>
                     <td>{{ fee['class_fee_amount'] }}</td>
                     <td>
+                        {% if fee.batch_time is none %}
+                            -
+                        {% else %}
+                            {{ fee.batch_time }}
+                        {% endif %}
+                    </td>
+                    <td>
                         {% if fee['enrolled'] %}
                         You've already applied
                         {% else %}
-                        <form class="applyForm">
-                            <input type="hidden" class="feeInput" value="{{ fee['id'] }}">
+                        <form action="{{ url_for('admission') }}" method="post">
+                            <input type="hidden" name="class_id" value="{{ fee['class_id'] }}">
+                            <input type="hidden" name="teacher_id" value="{{ fee['teacher_id'] }}">
                             <button type="submit" class="dashboard-link button" id="applyButton">
                                 <i class="fas fa-sign-in-alt"></i> Apply
                             </button>
                         </form>
                         {% endif %}
-                        
+
                     </td>
                 </tr>
                 {% endfor %}

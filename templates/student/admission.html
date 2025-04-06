@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admission</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Attach event listener to the form
+            document.querySelectorAll('.applyForm').forEach(function (form) {
+                form.addEventListener('submit', function (event) {
+                    event.preventDefault(); // Prevent the default form submission
+
+                    var class_id = this.querySelector('.feeInput').value;
+                    var teacher_id = this.querySelector('.teacherInput').value;
+                    var batch_time = document.querySelector('.dropdown-table').value;
+
+                    // Make an AJAX request to the API
+                    var xhr = new XMLHttpRequest();
+                    xhr.open('POST', "/api/apply_for_classes", true);
+                    xhr.setRequestHeader('Content-Type', 'application/json');
+                    xhr.onload = function () {
+                        alert(xhr.response)
+                        window.location.href = "/display_fee_structure"
+                    };
+                    xhr.onerror = function () {
+                        // Handle network error here
+                        console.error('Request failed. Network error');
+                    };
+                    xhr.send(JSON.stringify({
+                        "class_id": class_id,
+                        "teacher_id": teacher_id,
+                        "batch_time": batch_time
+                    }))
+                });
+            });
+        });
+
+    </script>
+</head>
+
+<body>
+    <div class="container">
+        <h1>Verify Details</h1>
+
+        <div>
+            <h4>
+                Thank you for showing interest <b>{{student.firstname}} {{student.lastname}}</b>. Please verify details
+                below
+            </h4>
+        </div>
+
+        <div class="section">
+            <h2>Teacher Info</h2>
+            <div class="row">
+                <div class="label">Name:</div>
+                <div class="value">{{ teacher.name }}</div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Class Info</h2>
+
+            <div class="row">
+                <div class="label">Name:</div>
+                <div class="value">{{ classes.name }}</div>
+            </div>
+            <div class="row">
+                <div class="label">Duration:</div>
+                <div class="value">{{ classes.duration }}</div>
+            </div>
+        </div>
+        <div class="section">
+            <h2>Confirm Batch Timings</h2>
+
+            <select class="dropdown-table">
+                <option value="Batch A - 8:00 am to 10:00 am">Batch A - 8:00 am to 10:00 am</option>
+                <option value="Batch B - 10:00 am to 12:00 pm">Batch B - 10:00 am to 12:00 pm</option>
+                <option value="Batch C - 1:00 pm to 3:00 pm">Batch C - 1:00 pm to 3:00 pm</option>
+                <option value="Batch D - 3:00 pm to 5:00 pm">Batch D - 3:00 pm to 5:00 pm</option>
+            </select>
+        </div>
+        <div class="button-row">
+            <form class="applyForm">
+                <input type="hidden" class="feeInput" value="{{ classes.id }}">
+                <input type="hidden" class="teacherInput" value="{{ teacher.id }}">
+                <button type="submit" class="dashboard-link button" id="applyButton">
+                    <i class="fas fa-sign-in-alt"></i> Apply
+                </button>
+            </form>
+            <a href="{{ url_for('display_fee_structure') }}" class="button">Back</a>
+        </div>
+
+    </div>
+</body>
+
+</html>

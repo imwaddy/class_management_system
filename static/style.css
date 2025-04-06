@@ -132,3 +132,60 @@ tbody tr:hover {
     background-color: #f0f0f0;
     color: #0056b3;
 }
+
+select.dropdown-table {
+    width: 100%; /* Use full cell width */
+    padding: 6px 8px;
+    margin: 0; /* Remove vertical spacing inside tables */
+    font-size: 14px;
+    background-position: right 8px center;
+    background-size: 10px;
+}
+
+.section {
+    border: 1px solid #ccc;
+    padding: 15px 20px;
+    margin-bottom: 20px;
+    border-radius: 8px;
+    max-width: 500px;
+}
+
+.section h2 {
+    margin-top: 0;
+    font-size: 1.2em;
+    margin-bottom: 12px;
+    background: #f7f7f7;
+    padding: 6px 10px;
+    border-radius: 5px;
+    border-left: 4px solid #007bff;
+}
+
+.row {
+    display: flex;
+    margin-bottom: 6px;
+}
+
+.label {
+    font-weight: bold;
+    width: 100px;
+}
+
+.value {
+    flex-grow: 1;
+}
+
+.button-row {
+    display: flex;
+    gap: 12px; /* space between buttons */
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+}
+
+.button-row form {
+    margin: 0; /* remove form spacing */
+}
+
+.button-row .button {
+    white-space: nowrap; /* keep button text on one line */
+}

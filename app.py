@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for, session, g
+from flask import Flask, render_template, jsonify, request, redirect, url_for, session, g
 import sqlite3
 import json
 
@@ -29,7 +29,6 @@ def register():
     conn = get_db()
     cursor = conn.cursor()
     
-    # Create users table if it doesn't exist
     cursor.execute('''CREATE TABLE IF NOT EXISTS users (
                       id INTEGER PRIMARY KEY,
                       username TEXT NOT NULL,
@@ -92,7 +91,6 @@ def add_class():
     conn = get_db()
     cursor = conn.cursor()
     
-    # Create classes table if it doesn't exist
     cursor.execute('''CREATE TABLE IF NOT EXISTS classes (
                       id INTEGER PRIMARY KEY,
                       name TEXT NOT NULL UNIQUE,  -- Add UNIQUE constraint to the 'name' column
@@ -100,7 +98,6 @@ def add_class():
                     )''')
     conn.commit()
 
-    # Get list of classes from the database
     cursor.execute("SELECT * FROM classes")
     classes = cursor.fetchall()
 
@@ -108,18 +105,14 @@ def add_class():
         name = request.form['name']
         duration = request.form['duration']
         
-        # Check if the class name already exists
         cursor.execute("SELECT id FROM classes WHERE name = ?", (name,))
         existing_class = cursor.fetchone()
         if existing_class is not None:
-            # Class name already exists, handle the error (e.g., display a message)
             return render_template('admin/add_class.html', error='Class name already exists', classes=classes)
         
-        # Insert the new class if it doesn't exist
         cursor.execute("INSERT INTO classes (name, duration) VALUES (?, ?)", (name, duration))
         conn.commit()
         
-        # Update the list of classes after adding a new one
         cursor.execute("SELECT * FROM classes")
         classes = cursor.fetchall()
         
@@ -134,7 +127,6 @@ def add_teacher():
     conn = get_db()
     cursor = conn.cursor()
     
-    # Create teachers table if it doesn't exist
     cursor.execute('''CREATE TABLE IF NOT EXISTS teachers (
                       id INTEGER PRIMARY KEY,
                       name TEXT NOT NULL UNIQUE  -- Add UNIQUE constraint to ensure uniqueness
@@ -144,25 +136,20 @@ def add_teacher():
     if request.method == 'POST':
         name = request.form['name']
         
-        # Check if the teacher name already exists
         cursor.execute("SELECT id FROM teachers WHERE name = ?", (name,))
         existing_teacher = cursor.fetchone()
         if existing_teacher is not None:
-            # Teacher name already exists, handle the error (e.g., display a message)
             error = 'Teacher name already exists'
         else:
-            # Insert the new teacher if it doesn't exist
             cursor.execute("INSERT INTO teachers (name) VALUES (?)", (name,))
             conn.commit()
             error = None
         
-        # Fetch the list of teachers from the database
         cursor.execute("SELECT id, name FROM teachers")
         teachers = cursor.fetchall()
         
         return render_template('admin/add_teacher.html', teachers=teachers, error=error)
     
-    # Fetch the list of teachers from the database for initial display
     cursor.execute("SELECT id, name FROM teachers")
     teachers = cursor.fetchall()
     
@@ -174,7 +161,6 @@ def add_fee_structure():
     conn = get_db()
     cursor = conn.cursor()
     
-    # Create fee_structures table if it doesn't exist
     cursor.execute('''CREATE TABLE IF NOT EXISTS fee_structures (
                       id INTEGER PRIMARY KEY,
                       class_id INTEGER NOT NULL,
@@ -191,23 +177,18 @@ def add_fee_structure():
         teacher_id = request.form['teacher_id']
         amount = request.form['amount']
         
-        # Check if the combination of class_id and teacher_id already exists
         cursor.execute("SELECT id FROM fee_structures WHERE class_id = ? AND teacher_id = ?", (class_id, teacher_id))
         existing_entry = cursor.fetchone()
         if existing_entry:
-            # If the entry already exists, handle the error (e.g., display a message)
             error = 'Combination of class and teacher already exists'
         else:
-            # Insert the new entry if it doesn't exist
             cursor.execute("INSERT INTO fee_structures (class_id, teacher_id, amount) VALUES (?, ?, ?)", (class_id, teacher_id, amount))
             conn.commit()
             error = None
         
-        # Fetch all fee structures from the database
         cursor.execute("SELECT fee_structures.id, classes.name AS class_name, teachers.name AS teacher_name, fee_structures.amount FROM fee_structures INNER JOIN classes ON fee_structures.class_id = classes.id INNER JOIN teachers ON fee_structures.teacher_id = teachers.id")
         fee_structures = cursor.fetchall()
         
-        # Fetch all classes and teachers for the form
         cursor.execute("SELECT * FROM classes")
         classes = cursor.fetchall()
         cursor.execute("SELECT * FROM teachers")
@@ -215,13 +196,11 @@ def add_fee_structure():
         
         return render_template('admin/add_fee_structure.html', classes=classes, teachers=teachers, fee_structures=fee_structures, error=error)
 
-    # Fetch all classes and teachers for the form
     cursor.execute("SELECT * FROM classes")
     classes = cursor.fetchall()
     cursor.execute("SELECT * FROM teachers")
     teachers = cursor.fetchall()
 
-    # Fetch all fee structures from the database
     cursor.execute("SELECT fee_structures.id, classes.name AS class_name, teachers.name AS teacher_name, fee_structures.amount FROM fee_structures INNER JOIN classes ON fee_structures.class_id = classes.id INNER JOIN teachers ON fee_structures.teacher_id = teachers.id")
     fee_structures = cursor.fetchall()
     
@@ -234,7 +213,6 @@ def registerStudent():
     conn = get_db()
     cursor = conn.cursor()
 
-    # Create student table if it doesn't exist
     cursor.execute('''CREATE TABLE IF NOT EXISTS student (
                       id INTEGER PRIMARY KEY,
                       firstname TEXT NOT NULL,
@@ -251,27 +229,17 @@ def registerStudent():
         firstname = request.form['firstname']
         lastname = request.form['lastname']
         email = request.form['email']
-        
-        # Check if the username already exists
+
         cursor.execute("SELECT username FROM student WHERE username = ?", (username,))
         existing_student = cursor.fetchone()
         if existing_student is not None:
             return render_template('student/register.html', error='Username already exists')
-        
-        # Insert new student if the username doesn't exist
+
         cursor.execute("INSERT INTO student (firstname, lastname, email, username, password) VALUES (?, ?, ?, ?, ?)", (firstname, lastname, email,username, password))
         conn.commit()
         return redirect(url_for('studentLogin'))
 
     return render_template('student/register.html')
-
-# @app.route('/abcxyz', methods=['GET'])
-# def studentGET():
-#     conn = get_db()
-#     cursor = conn.cursor()
-#     cursor.execute("SELECT * FROM student")
-#     user = cursor.fetchall()
-#     return user
 
 @app.route('/studentLogin', methods=['GET', 'POST'])
 def studentLogin():
@@ -295,7 +263,7 @@ def display_fee_structure():
     conn = get_db()
     cursor = conn.cursor()
 
-    # Check if the fee_structures table exists
+
     cursor.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='fee_structures'")
     fee_structures_table_exists = cursor.fetchone()
     
@@ -306,7 +274,6 @@ def display_fee_structure():
     error = None
 
     if fee_structures_table_exists:
-        # Retrieve fee structures
         cursor.execute("""
             SELECT fee_structures.id, classes.id AS class_id, classes.name AS class_name, 
             teachers.id AS teacher_id, teachers.name AS teacher_name, fee_structures.amount AS class_fee_amount
@@ -316,17 +283,13 @@ def display_fee_structure():
         """)
         fee_structure = cursor.fetchall()
 
-        # Retrieve student_id from session
         student_id = session.get('student')
         if student_id is not None:
             student_id = int(student_id)
             
             if classenrollment_table_exists:
-                # Retrieve already enrolled classes for the student
-                cursor.execute("SELECT class_id FROM classenrollment WHERE student_id = ?", (student_id,))
-                enrolled_class_ids = [enrollment[0] for enrollment in cursor.fetchall()]
-
-                # Mark fee structures with enrollment status
+                cursor.execute("SELECT class_id,teacher_id, batch_time FROM classenrollment WHERE student_id = ?", (student_id,))
+                enrolled_class_ids = {(enrollment[0], enrollment[1]): enrollment[2] for enrollment in cursor.fetchall()}
                 fee_structure = [
                     {
                         'id': fee[0],
@@ -335,7 +298,8 @@ def display_fee_structure():
                         'teacher_id': fee[3],
                         'teacher_name': fee[4],
                         'class_fee_amount': fee[5],
-                        'enrolled': fee[0] in enrolled_class_ids
+                         'batch_time': enrolled_class_ids.get((fee[1], fee[3])),
+                        'enrolled': (fee[1], fee[3]) in enrolled_class_ids
                     }
                     for fee in fee_structure
                 ]
@@ -348,6 +312,7 @@ def display_fee_structure():
                         'teacher_id': fee[3],
                         'teacher_name': fee[4],
                         'class_fee_amount': fee[5],
+                        'batch_time': '-',
                         'enrolled': False
                     }
                     for fee in fee_structure
@@ -367,8 +332,7 @@ def delete_class(class_name):
     
     cursor.execute("DELETE FROM classes WHERE name=?", (class_name,))
     conn.commit()
-        
-        # Update the list of classes after adding a new one
+
     cursor.execute("SELECT * FROM classes")
     classes = cursor.fetchall()
     
@@ -398,8 +362,11 @@ def api_apply_for_classes():
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             class_id INTEGER NOT NULL,
             student_id INTEGER NOT NULL,
+            teacher_id INTEGER NOT NULL,
+            batch_time TEXT,
             FOREIGN KEY (class_id) REFERENCES classes(id),
             FOREIGN KEY (student_id) REFERENCES student(id)
+            FOREIGN KEY (teacher_id) REFERENCES teachers(id)
         )
     """)
 
@@ -410,6 +377,12 @@ def api_apply_for_classes():
     class_id = data.get("class_id")
     if not class_id:
         return "Class ID is required", 400
+    teacher_id = data.get("teacher_id")
+    if not teacher_id:
+        return "Teacher ID is required", 400
+    batch_time = data.get("batch_time")
+    if not batch_time:
+        return "Batch Timing is required", 400
 
     student_id = session.get('student')
     if student_id is not None:
@@ -423,16 +396,76 @@ def api_apply_for_classes():
         error = "No existing user found"
         return error, 400
 
-    cursor.execute("SELECT * FROM classenrollment WHERE class_id = ? AND student_id = ?", (class_id, student_id))
+    cursor.execute("SELECT * FROM classenrollment WHERE class_id = ? AND student_id = ? AND teacher_id = ?", (class_id, student_id, teacher_id))
     value = cursor.fetchone()
     if value:
         return "You've already applied for the requested class", 400
 
-    # Insert the application into the database
-    cursor.execute("INSERT INTO classenrollment (class_id, student_id) VALUES (?, ?)", (class_id, student_id))
+    cursor.execute("INSERT INTO classenrollment (class_id, student_id, teacher_id, batch_time) VALUES (?, ?, ?, ?)", (class_id, student_id, teacher_id, batch_time))
     conn.commit()
 
     return f"Thank You {student[1]} {student[2]}, You've successfully applied for the requested class", 200
+
+@app.route('/admission', methods=['POST'])
+def admission():
+    class_id = request.form.get("class_id")
+    teacher_id = request.form.get("teacher_id")
+
+    if 'student' not in session:
+        return jsonify({'redirect': url_for('studentLogin')}), 401
+
+    student_id = session['student']
+    conn = get_db()
+    cursor = conn.cursor()
+
+    try:
+        cursor.execute("SELECT firstname, lastname, email FROM student WHERE id = ?", (student_id,))
+        student = cursor.fetchone()
+        if not student:
+            return jsonify({'error': 'Student not found'}), 404
+
+        cursor.execute("SELECT * FROM classes WHERE id = ?", (class_id,))
+        classes = cursor.fetchone()
+        if not classes:
+            return jsonify({'error': 'Class not found'}), 404
+
+        cursor.execute("SELECT * FROM teachers WHERE id = ?", (teacher_id,))
+        teacher = cursor.fetchone()
+        if not teacher:
+            return jsonify({'error': 'Teacher not found'}), 404
+
+        session['admission_data'] = {
+            'student': {
+                'firstname': student[0],
+                'lastname': student[1],
+                'email': student[2]
+            },
+            'classes': {
+                'id': classes[0],
+                'name': classes[1],
+                'duration': classes[2]
+            },
+            'teacher': {
+                'id': teacher[0],
+                'name': teacher[1]
+            }
+        }
+
+        return redirect(url_for('admission_page'))
+    except e:
+        return jsonify({'error', e})
+
+@app.route('/admission_page')
+def admission_page():
+    data = session.get('admission_data')
+    if not data:
+        return redirect(url_for('display_fee_structure'))
+
+    return render_template('student/admission.html',
+        student=data['student'],
+        classes=data['classes'],
+        teacher=data['teacher']
+    )
 
 if __name__ == '__main__':
     app.run(debug=True)
